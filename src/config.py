@@ -13,6 +13,7 @@ class Config:
         self.GMAIL_APP_PASSWORD = self._require("GMAIL_APP_PASSWORD")
         self.TEACHER_NAME = os.getenv("TEACHER_NAME", "Mr Smalley")
         self.TARGET_DATE = os.getenv("TARGET_DATE") or None
+        self.END_DATE = os.getenv("END_DATE", "2026-06-10")
         self.DEBUG_SCREENSHOT = os.getenv("DEBUG_SCREENSHOT", "false").lower() == "true"
 
     def _require(self, key: str) -> str:

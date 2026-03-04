@@ -46,6 +46,7 @@ jobs:
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           TEACHER_NAME: ${{ secrets.TEACHER_NAME || 'Mr Smalley' }}
           TARGET_DATE: ${{ inputs.target_date || '' }}
+          END_DATE: ${{ secrets.END_DATE || '2026-06-10' }}
           DEBUG_SCREENSHOT: 'false'
         run: poetry run python -m src.main
 

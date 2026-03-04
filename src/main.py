@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import sys
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 from src.config import Config
@@ -32,7 +32,12 @@ def get_target_date(override: str | None = None) -> datetime:
 async def run():
     config = Config()
     target = get_target_date(config.TARGET_DATE)
+    end_date = date.fromisoformat(config.END_DATE)
     logger.info(f"Target date: {target.strftime('%A, %B %d, %Y')}")
+
+    if target > end_date:
+        logger.info(f"Target date is past end date ({config.END_DATE}), skipping.")
+        return
 
     slots = await scrape_signupgenius(
         url=config.SIGNUP_GENIUS_URL,
