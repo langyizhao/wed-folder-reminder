@@ -1,0 +1,59 @@
+name: Wednesday Folder Reminder
+
+on:
+  schedule:
+    # Every Tuesday at 7 PM UTC = 2 PM EST / 3 PM EDT
+    - cron: '0 19 * * 2'
+  workflow_dispatch:
+    inputs:
+      target_date:
+        description: 'Override target date (YYYY-MM-DD format)'
+        required: false
+        default: ''
+      signup_url:
+        description: 'Override SignUpGenius URL'
+        required: false
+        default: ''
+
+jobs:
+  send-reminder:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Poetry
+        run: pip install poetry
+
+      - name: Install Python dependencies
+        run: poetry install --no-interaction
+
+      - name: Install Playwright browsers
+        run: poetry run playwright install --with-deps chromium
+
+      - name: Run reminder script
+        env:
+          SIGNUP_GENIUS_URL: ${{ inputs.signup_url || secrets.SIGNUP_GENIUS_URL }}
+          EMAIL_RECIPIENTS: ${{ secrets.EMAIL_RECIPIENTS }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          TEACHER_NAME: ${{ secrets.TEACHER_NAME || 'Mr Smalley' }}
+          TARGET_DATE: ${{ inputs.target_date || '' }}
+          DEBUG_SCREENSHOT: 'false'
+        run: poetry run python -m src.main
+
+      - name: Upload debug screenshot (if exists)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-screenshot
+          path: debug_screenshot.png
+          if-no-files-found: ignore
+          retention-days: 7

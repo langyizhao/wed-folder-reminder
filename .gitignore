@@ -1,0 +1,19 @@
+# Environment
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Playwright debug output
+debug_screenshot.png
+debug_text.txt
+
+# IDE
+.idea/
+.vscode/
+*.swp
